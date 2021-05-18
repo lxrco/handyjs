@@ -33,7 +33,7 @@ module.exports = function(app){
     if(authenticatedStatus){
       const alert = {type: 'info', text: 'user is already logged in'};
       system.systemMessage.set(alert, req, res);
-      return res.redirect('/');        
+      return res.redirect('/');
     } else {
       system.systemMessage.get(req, res);
       res.render('login', {pageInfo})
@@ -172,7 +172,7 @@ module.exports = function(app){
         const logFile = system.systemGlobal.getConfig('logDestination') || system.systemGlobal.getConfig('logFileDefaultDestination');
         _findLogFiles(logFile)
         .then((currentLogFiles)=> _readLogFile(currentLogFiles, age))
-        .then((logArray)=> _filterLogs(logArray, {age}))  
+        .then((logArray)=> _filterLogs(logArray, {age}))
         .then((logArray)=>{
           const filters = _getFilterValues(logArray);
           res.send(JSON.stringify({logs: logArray, filters}));
@@ -245,7 +245,7 @@ module.exports = function(app){
     })
     .catch((err)=>{
       const alert = {type: 'danger', text: 'error connecting google account - ' + err.message};
-      system.systemMessage.set(alert, req, res);      
+      system.systemMessage.set(alert, req, res);
       res.redirect('/');
       system.log({req, level: 'error', category: 'user', msg: 'error connecting google account', err});
     })
@@ -310,7 +310,7 @@ function _findLogFiles(baseFile, logFileArray=[], ctr=-1){
     // check if log file exists
     let currentFileToCheck = baseFile;
     if(ctr >= 0){
-      currentFileToCheck += '.' + ctr; 
+      currentFileToCheck += '.' + ctr;
     }
 
     fs.stat(currentFileToCheck, (err, stats)=>{
@@ -361,7 +361,7 @@ function _readLogFile(files=[], age){
             }
           })
         })
-      
+
       )
 
     })
@@ -380,7 +380,7 @@ function _extractLogLine(text, logArray){
   return new Promise((resolve, reject)=>{
     let newLineIndex = text.indexOf(os.EOL);
     if(newLineIndex === -1){ return resolve({text, logArray}); }
-    
+
     let line = text.substring(0, newLineIndex);
     _processLogLine(line, logArray)
     .then((returnArray)=>{
