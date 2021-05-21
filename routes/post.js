@@ -38,6 +38,8 @@ module.exports = function(app){
     delete req.body._csrf;
     let alert;
     let loginUser = new user.User({email: req.body.userEmail});
+    console.log(req.body);
+
     loginUser.authenticate(req.body.userPassword)
     .then(()=>loginUser.login(req))
     .then(()=>{
@@ -83,7 +85,7 @@ module.exports = function(app){
     const name = req.body.userName.trim();
     const password = req.body.password.trim();
     const passwordConfirmation = req.body.passwordConfirmation.trim();
-    
+
     const id = Number.parseInt(req.body.userId, 10);
     let profileUser = new user.User({id});
     return new Promise((resolve, reject)=>{
@@ -144,18 +146,18 @@ module.exports = function(app){
     let config = {};
 
     // get text input
-    const textFields = ['siteName', 'siteEmail', 'siteSupportEmail', 'siteEmailUsername', 
-      'siteEmailPassword', 'siteEmailHost', 
-      'mandrillApiKey', 'googleClientId', 'googleClientSecret', 
-      'googleAuthRedirectURIPath', 'googleAuthScopes', 
-      'emailAgent', 'logDestination', 'reportDestination', 'reportFreq', 
+    const textFields = ['siteName', 'siteEmail', 'siteSupportEmail', 'siteEmailUsername',
+      'siteEmailPassword', 'siteEmailHost',
+      'mandrillApiKey', 'googleClientId', 'googleClientSecret',
+      'googleAuthRedirectURIPath', 'googleAuthScopes',
+      'emailAgent', 'logDestination', 'reportDestination', 'reportFreq',
       'backupDestination', 'backupDestinationType'
     ];
 
     textFields.forEach((field)=>{
       config[field] = req.body[field];
     })
-    
+
     // get radio buttons
     const radioFields = ['siteEmailSSL', 'siteEmailTLS'];
 
@@ -164,10 +166,10 @@ module.exports = function(app){
     })
 
     // numerical fields
-    const numericalFields = ['siteEmailPort', 'siteEmailTimeout', 
+    const numericalFields = ['siteEmailPort', 'siteEmailTimeout',
       'gmailSendBuffer', 'backupFreq'
     ];
-    
+
     numericalFields.forEach((field)=>{
       // if provided, convert to integer and save
       if(field !== ''){
@@ -218,9 +220,9 @@ module.exports = function(app){
     // need to provide a temporary password so the user account can be created
     // will be overwritten almost immediately
     const tempPassword = utility.generateRandomString(30);
-    
+
     const typeOfUser = 'new';
-    const linkExpiryTime = 24 * 60;  // time, in minutes, when user needs to activate account 
+    const linkExpiryTime = 24 * 60;  // time, in minutes, when user needs to activate account
     newUser.hashPassword(tempPassword)
     .then(()=> newUser.save())
     .then(()=> newUser.initiatePasswordReset(typeOfUser, linkExpiryTime))
@@ -241,7 +243,7 @@ module.exports = function(app){
 
   /*
    * modify user password
-   * 
+   *
    * type - can be 'change' or 'reset'
    *        'change' is when the user knows the current password
    *        'reset' is when the user does not know the current password
@@ -251,8 +253,8 @@ module.exports = function(app){
     const email = req.session.user.email;
     const password = req.body.userPassword.trim();
     const passwordConfirmation = req.body.userPasswordConfirmation.trim();
-    let resetUser = new user.User({email});    
-    
+    let resetUser = new user.User({email});
+
     // validate password
     return new Promise((resolve, reject)=>{
       if(!password || password !== passwordConfirmation){return reject(new Error('password and password confirmation must match'))}
